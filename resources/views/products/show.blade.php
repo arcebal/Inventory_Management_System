@@ -8,14 +8,16 @@
             <div class="bg-white p-6 shadow rounded">
 
                 <!-- Product Image -->
-                @if($product->image && file_exists(storage_path('app/public/' . $product->image)))
-                    <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}"
-                         class="mb-4 w-full max-h-96 object-cover rounded">
-                @else
-                    <div class="mb-4 w-full max-h-96 bg-gray-100 flex items-center justify-center rounded">
+                <div class="mb-6 w-full h-80 bg-gray-100 rounded flex items-center justify-center overflow-hidden">
+                    @if($product->image && file_exists(storage_path('app/public/' . $product->image)))
+                        <img src="{{ asset('storage/' . $product->image) }}"
+                            alt="{{ $product->name }}"
+                            class="max-h-full max-w-full object-contain">
+                    @else
                         <span class="text-gray-400">No image available</span>
-                    </div>
-                @endif
+                    @endif
+                </div>
+
 
                 <!-- Product Details -->
                 <div class="space-y-2">

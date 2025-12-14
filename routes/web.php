@@ -28,13 +28,21 @@ Route::middleware(['auth'])->group(function () {
     // Inventory overview
     Route::get('/inventory', [InventoryController::class, 'index'])->name('inventory.index');
 
+    Route::post('/stock', [StockController::class, 'store'])->name('stock.store');
+    Route::get('/stock/create', [StockController::class, 'create'])->name('stock.create');
+
+
     // Stock history
     Route::get('/stock-history', [StockHistoryController::class, 'index'])
     ->name('stock.history');
+    Route::get('/stock/create', [StockController::class, 'create'])->name('stock.create');
+    Route::post('/stock', [StockController::class, 'store'])->name('stock.store');
 
     // Inventory report
     Route::get('/reports/inventory', [ReportController::class, 'inventoryReport'])
     ->name('reports.inventory');
+
+    
 
     // Profile routes
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

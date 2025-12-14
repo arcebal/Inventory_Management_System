@@ -8,12 +8,11 @@ class InventoryController extends Controller
 {
     public function index()
     {
-        $totalProducts = Product::count();
-        $lowStockProducts = Product::whereColumn('quantity', '<=', 'low_stock_level')->get();
+        $products = Product::with('category')->get();
+        $grandTotal = $products->sum(function($p) {
+            return $p->price * $p->quantity;
+        });
 
-        return view('inventory.index', compact(
-            'totalProducts',
-            'lowStockProducts'
-        ));
+        return view('inventory.index', compact('products', 'grandTotal'));
     }
 }

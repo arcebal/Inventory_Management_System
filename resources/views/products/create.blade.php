@@ -47,6 +47,15 @@
                         @error('quantity') <p class="text-danger mt-1">{{ $message }}</p> @enderror
                     </div>
 
+                    <!-- Description -->
+                    <div class="mb-4">
+                        <label class="block font-medium text-gray-700">Description</label>
+                        <textarea name="description" rows="4"
+                            class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:ring-coffee focus:border-coffee"
+                            placeholder="Enter product description...">{{ old('description') }}</textarea>
+                        @error('description') <p class="text-danger mt-1">{{ $message }}</p> @enderror
+                    </div>
+
                     <!-- Product Image -->
                     <div class="mb-4">
                         <label class="block font-medium text-gray-700">Product Image</label>

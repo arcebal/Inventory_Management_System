@@ -11,8 +11,9 @@ class ReportController extends Controller
     {
         $products = Product::with('category')->get();
 
-        $pdf = Pdf::loadView('reports.inventory', compact('products'))
-            ->setPaper('a4', 'portrait');
+        // Load PDF-specific view
+        $pdf = Pdf::loadView('reports.inventory_pdf', compact('products'))
+                  ->setPaper('a4', 'portrait');
 
         return $pdf->download('pionere_inventory_report.pdf');
     }

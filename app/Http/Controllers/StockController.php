@@ -2,12 +2,19 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Models\StockMovement;
-use Illuminate\Http\Request;
 
 class StockController extends Controller
 {
+    public function create()
+    {
+        // Pass all products to the stock form
+        $products = Product::all();
+        return view('stock.create', compact('products'));
+    }
+
     public function store(Request $request)
     {
         $request->validate([
@@ -19,22 +26,32 @@ class StockController extends Controller
 
         $product = Product::findOrFail($request->product_id);
 
-        if ($request->type === 'out' && $product->quantity < $request->quantity) {
-            return back()->withErrors(['quantity' => 'Not enough stock']);
+        // Check if stock out is possible
+        if ($request->type === 'out' && $request->quantity > $product->quantity) {
+            return back()->withErrors(['quantity' => 'Cannot remove more than current stock.'])->withInput();
         }
 
-        // Update product quantity
+        // Create stock movement
+        StockMovement::create([
+            'product_id' => $product->id,
+            'type' => $request->type,
+            'quantity' => $request->quantity,
+            'remarks' => $request->remarks,
+        ]);
+
+        // Update product stock
         if ($request->type === 'in') {
-            $product->quantity += $request->quantity;
+            $product->increment('quantity', $request->quantity);
         } else {
-            $product->quantity -= $request->quantity;
+            $product->decrement('quantity', $request->quantity);
         }
 
-        $product->save();
+        return redirect()->route('stock.history')->with('success', 'Stock updated successfully.');
+    }
 
-        // Save stock movement
-        StockMovement::create($request->all());
-
-        return back();
+    public function history()
+    {
+        $movements = StockMovement::with('product')->orderBy('created_at', 'desc')->get();
+        return view('stock.history', compact('movements'));
     }
 }
