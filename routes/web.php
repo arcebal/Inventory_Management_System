@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\CategoryController;
@@ -8,49 +9,63 @@ use App\Http\Controllers\StockController;
 use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\StockHistoryController;
 use App\Http\Controllers\ReportController;
-use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
 });
 
 Route::middleware(['auth'])->group(function () {
-    // Dashboard
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
+    /*
+    |--------------------------------------------------------------------------
+    | STAFF + ADMIN (shared access)
+    |--------------------------------------------------------------------------
+    */
+    Route::middleware('staff')->group(function () {
 
-    // Product CRUD (protected)
-    Route::resource('products', ProductController::class);
+        // Dashboard
+        Route::get('/dashboard', [DashboardController::class, 'index'])
+            ->name('dashboard');
 
-    // Stock movement routes
-    Route::post('/stock', [StockController::class, 'store'])->name('stock.store');
+        // Inventory
+        Route::get('/inventory', [InventoryController::class, 'index'])
+            ->name('inventory.index');
 
-    // Inventory overview
-    Route::get('/inventory', [InventoryController::class, 'index'])->name('inventory.index');
+        // Stock
+        Route::get('/stock/create', [StockController::class, 'create'])
+            ->name('stock.create');
+        Route::post('/stock', [StockController::class, 'store'])
+            ->name('stock.store');
 
-    Route::post('/stock', [StockController::class, 'store'])->name('stock.store');
-    Route::get('/stock/create', [StockController::class, 'create'])->name('stock.create');
+        // Stock History
+        Route::get('/stock-history', [StockHistoryController::class, 'index'])
+            ->name('stock.history');
 
+        // Reports (read-only + PDF allowed)
+        Route::get('/reports/inventory', [ReportController::class, 'inventoryReport'])
+            ->name('reports.inventory');
 
-    // Stock history
-    Route::get('/stock-history', [StockHistoryController::class, 'index'])
-    ->name('stock.history');
-    Route::get('/stock/create', [StockController::class, 'create'])->name('stock.create');
-    Route::post('/stock', [StockController::class, 'store'])->name('stock.store');
+        // Profile (both roles)
+        Route::get('/profile', [ProfileController::class, 'edit'])
+            ->name('profile.edit');
+        Route::patch('/profile', [ProfileController::class, 'update'])
+            ->name('profile.update');
+        Route::delete('/profile', [ProfileController::class, 'destroy'])
+            ->name('profile.destroy');
+    });
 
-    // Inventory report
-    Route::get('/reports/inventory', [ReportController::class, 'inventoryReport'])
-    ->name('reports.inventory');
+    /*
+    |--------------------------------------------------------------------------
+    | ADMIN ONLY
+    |--------------------------------------------------------------------------
+    */
+    Route::middleware('admin')->group(function () {
 
-    
+        // Product & Category Management
+        Route::resource('products', ProductController::class);
+        Route::resource('categories', CategoryController::class);
+    });
 
-    // Profile routes
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-
-    // Category CRUD (protected)
-    Route::resource('categories', CategoryController::class);
 });
 
 require __DIR__.'/auth.php';

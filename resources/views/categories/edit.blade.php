@@ -17,9 +17,11 @@
                         <label class="block mb-1">Description</label>
                         <textarea name="description" class="w-full border px-3 py-2">{{ $category->description }}</textarea>
                     </div>
-                    <button type="submit" class="bg-brown-800 text-white px-4 py-2 rounded">Update</button>
+                    <button type="submit" class="bg-coffee text-white px-4 py-2 rounded hover:bg-coffee-dark transition">Update</button>
                 </form>
             </div>
         </div>
     </div>
+
+    
 </x-app-layout>

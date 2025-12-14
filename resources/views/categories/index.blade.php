@@ -6,12 +6,14 @@
     <div class="py-6">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white p-6 shadow rounded">
-                
+
                 <!-- Add Category Button -->
-                <a href="{{ route('categories.create') }}"
-                   class="bg-coffee text-white px-4 py-2 rounded mb-4 inline-block hover:bg-coffee-dark transition">
-                   ➕ Add Category
-                </a>
+                <div class="mb-4">
+                    <a href="{{ route('categories.create') }}"
+                       class="bg-coffee text-white px-4 py-2 rounded inline-block hover:bg-coffee-dark transition">
+                       ➕ Add Category
+                    </a>
+                </div>
 
                 <!-- Categories Table -->
                 <table class="w-full border border-gray-200">
@@ -38,7 +40,7 @@
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit"
-                                        class="text-danger font-medium hover:underline"
+                                        class="text-red-600 font-medium hover:underline"
                                         onclick="return confirm('Are you sure you want to delete this category?')">
                                         🗑 Delete
                                     </button>
@@ -52,4 +54,6 @@
             </div>
         </div>
     </div>
+
+    
 </x-app-layout>
